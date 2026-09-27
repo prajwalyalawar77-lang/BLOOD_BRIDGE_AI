@@ -2,6 +2,7 @@ from flask import Flask, render_template, request
 from database import create_database, add_blood_bank, get_blood_banks
 
 app = Flask(__name__)
+create_database()
 
 
 # ==================================================
