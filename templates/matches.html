@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Matching | Blood Bridge AI</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at top, #26000b, #05070d 60%);
+            color: white;
+            padding: 35px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .back {
+            color: #aaa;
+            text-decoration: none;
+        }
+
+        .back:hover {
+            color: white;
+        }
+
+        .header {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .ai-badge {
+            display: inline-block;
+            padding: 8px 18px;
+            border: 1px solid #ff1744;
+            border-radius: 30px;
+            color: #ff4d6d;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 48px;
+        }
+
+        h1 span {
+            color: #ff1744;
+        }
+
+        .header p {
+            color: #999;
+            margin-top: 12px;
+        }
+
+        /* AI SCANNING */
+
+        .scanner {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 22px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .core {
+            width: 110px;
+            height: 110px;
+            margin: auto;
+            border-radius: 50%;
+            background: #ff1744;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 45px;
+            box-shadow:
+                0 0 30px rgba(255,23,68,0.7),
+                0 0 80px rgba(255,23,68,0.25);
+            animation: pulse 1.5s infinite;
+        }
+
+        .scanning-text {
+            margin-top: 20px;
+            color: #ff4d6d;
+            font-size: 18px;
+        }
+
+        .progress {
+            max-width: 500px;
+            height: 7px;
+            background: #222;
+            border-radius: 10px;
+            margin: 18px auto;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: #ff1744;
+            transition: width 2s;
+        }
+
+        /* CHECKS */
+
+        .checks {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .check {
+            padding: 15px;
+            border: 1px solid #292929;
+            border-radius: 10px;
+            color: #777;
+        }
+
+        .check.active {
+            color: #66ff99;
+            border-color: rgba(102,255,153,0.3);
+        }
+
+        /* RESULTS */
+
+        #results {
+            display: none;
+        }
+
+        .result-title {
+            text-align: center;
+            margin: 40px 0 25px;
+        }
+
+        .result-title h2 {
+            color: #66ff99;
+            font-size: 30px;
+        }
+
+        .matches {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .match-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 18px;
+            padding: 24px;
+            transition: 0.3s;
+        }
+
+        .match-card:hover {
+            transform: translateY(-5px);
+            border-color: #ff1744;
+            box-shadow: 0 10px 35px rgba(255,23,68,0.12);
+        }
+
+        .match-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .blood {
+            font-size: 30px;
+            font-weight: bold;
+            color: #ff1744;
+        }
+
+        .match-score {
+            color: #66ff99;
+            font-weight: bold;
+        }
+
+        .info {
+            color: #aaa;
+            line-height: 2;
+        }
+
+        .connect {
+            width: 100%;
+            margin-top: 18px;
+            padding: 13px;
+            border: 0;
+            border-radius: 9px;
+            background: #ff1744;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .connect:hover {
+            background: #e9133d;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.08);
+            }
+        }
+
+        @media(max-width: 800px) {
+
+            .checks {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .matches {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 35px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <a href="/emergency" class="back">
+        ← Back to Emergency Request
+    </a>
+
+
+    <div class="header">
+
+        <div class="ai-badge">
+            🤖 BLOOD BRIDGE AI
+        </div>
+
+        <h1>
+            Intelligent <span>Matching</span>
+        </h1>
+
+        <p>
+            Our matching engine is analyzing the available network.
+        </p>
+
+    </div>
+
+
+    <!-- AI SCANNER -->
+
+    <div class="scanner">
+
+        <div class="core">
+            🩸
+        </div>
+
+        <div class="scanning-text" id="status">
+            AI IS ANALYZING THE NETWORK...
+        </div>
+
+        <div class="progress">
+            <div class="progress-bar" id="progress"></div>
+        </div>
+
+
+        <div class="checks">
+
+            <div class="check" id="check1">
+                ⏳ Blood Group
+            </div>
+
+            <div class="check" id="check2">
+                ⏳ Location
+            </div>
+
+            <div class="check" id="check3">
+                ⏳ Availability
+            </div>
+
+            <div class="check" id="check4">
+                ⏳ Priority
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- MATCH RESULTS -->
+
+    <div id="results">
+
+        <div class="result-title">
+
+            <h2>✓ MATCHES FOUND</h2>
+
+            <p>
+                Potential matches identified by the prototype matching engine.
+            </p>
+
+        </div>
+
+
+        <div class="matches">
+
+            <!-- MATCH 1 -->
+
+            <div class="match-card">
+
+                <div class="match-top">
+
+                    <div class="blood">
+                        O−
+                    </div>
+
+                    <div class="match-score">
+                        98% Match
+                    </div>
+
+                </div>
+
+                <div class="info">
+
+                    🏥 City Blood Bank<br>
+                    📍 3.2 km away<br>
+                    🩸 2 units listed<br>
+                    🕒 Updated recently
+
+                </div>
+
+                <button
+                    class="connect"
+                    onclick="connect('City Blood Bank')"
+                >
+                    CONNECT
+                </button>
+
+            </div>
+
+
+            <!-- MATCH 2 -->
+
+            <div class="match-card">
+
+                <div class="match-top">
+
+                    <div class="blood">
+                        O−
+                    </div>
+
+                    <div class="match-score">
+                        94% Match
+                    </div>
+
+                </div>
+
+                <div class="info">
+
+                    🏥 Regional Blood Centre<br>
+                    📍 5.7 km away<br>
+                    🩸 1 unit listed<br>
+                    🕒 Updated recently
+
+                </div>
+
+                <button
+                    class="connect"
+                    onclick="connect('Regional Blood Centre')"
+                >
+                    CONNECT
+                </button>
+
+            </div>
+
+
+            <!-- MATCH 3 -->
+
+            <div class="match-card">
+
+                <div class="match-top">
+
+                    <div class="blood">
+                        O−
+                    </div>
+
+                    <div class="match-score">
+                        89% Match
+                    </div>
+
+                </div>
+
+                <div class="info">
+
+                    🏥 Community Blood Centre<br>
+                    📍 7.4 km away<br>
+                    🩸 2 units listed<br>
+                    🕒 Updated recently
+
+                </div>
+
+                <button
+                    class="connect"
+                    onclick="connect('Community Blood Centre')"
+                >
+                    CONNECT
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    let progress = 0;
+
+    const bar = document.getElementById("progress");
+    const status = document.getElementById("status");
+
+    const checks = [
+        document.getElementById("check1"),
+        document.getElementById("check2"),
+        document.getElementById("check3"),
+        document.getElementById("check4")
+    ];
+
+
+    function runAI() {
+
+        let step = 0;
+
+        const interval = setInterval(() => {
+
+            if (step < checks.length) {
+
+                checks[step].classList.add("active");
+
+                checks[step].innerHTML =
+                    "✓ " + checks[step].innerText.substring(2);
+
+                progress += 25;
+
+                bar.style.width = progress + "%";
+
+                step++;
+
+            } else {
+
+                clearInterval(interval);
+
+                status.innerHTML =
+                    "✓ MATCHING COMPLETE";
+
+                document.getElementById("results").style.display =
+                    "block";
+
+            }
+
+        }, 900);
+
+    }
+
+
+    function connect(name) {
+
+        alert(
+            "Connection request sent to " +
+            name +
+            "."
+        );
+
+    }
+
+
+    runAI();
+
+</script>
+
+</body>
+</html>

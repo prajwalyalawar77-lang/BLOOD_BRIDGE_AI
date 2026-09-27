@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Blood Bridge AI</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #05070d;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* Background glow */
+
+        body::before {
+            content: "";
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: rgba(255, 0, 60, 0.12);
+            filter: blur(120px);
+            border-radius: 50%;
+            top: 10%;
+            left: 35%;
+            z-index: -1;
+        }
+
+        /* NAVBAR */
+
+        nav {
+            width: 100%;
+            padding: 22px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .logo span {
+            color: #ff1744;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        nav ul li a {
+            color: #aaa;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: white;
+        }
+
+        /* HERO */
+
+        .hero {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 70px 8%;
+        }
+
+        .hero-text {
+            max-width: 600px;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 8px 15px;
+            border: 1px solid rgba(255,23,68,0.5);
+            border-radius: 30px;
+            color: #ff4d6d;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        h1 {
+            font-size: 65px;
+            line-height: 1.05;
+            margin-bottom: 25px;
+        }
+
+        h1 span {
+            color: #ff1744;
+        }
+
+        .hero-text p {
+            color: #aaa;
+            font-size: 18px;
+            line-height: 1.7;
+            margin-bottom: 35px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 15px 25px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .primary {
+            background: #ff1744;
+            color: white;
+            box-shadow: 0 0 25px rgba(255,23,68,0.35);
+        }
+
+        .primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 40px rgba(255,23,68,0.6);
+        }
+
+        .secondary {
+            border: 1px solid #333;
+            color: white;
+        }
+
+        .secondary:hover {
+            background: #151821;
+        }
+
+        /* AI CORE */
+
+        .ai-area {
+            width: 400px;
+            height: 400px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid rgba(255,23,68,0.25);
+        }
+
+        .circle.one {
+            width: 320px;
+            height: 320px;
+            animation: rotate 12s linear infinite;
+        }
+
+        .circle.two {
+            width: 250px;
+            height: 250px;
+            border-style: dashed;
+            animation: rotateReverse 8s linear infinite;
+        }
+
+        .circle.three {
+            width: 180px;
+            height: 180px;
+        }
+
+        .core {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: #ff1744;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 45px;
+            box-shadow:
+                0 0 30px rgba(255,23,68,0.7),
+                0 0 80px rgba(255,23,68,0.3);
+            animation: pulse 2s infinite;
+            z-index: 5;
+        }
+
+        .node {
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #ff1744;
+            box-shadow: 0 0 15px #ff1744;
+        }
+
+        .node.n1 {
+            top: 35px;
+            left: 190px;
+        }
+
+        .node.n2 {
+            right: 35px;
+            top: 190px;
+        }
+
+        .node.n3 {
+            bottom: 35px;
+            left: 190px;
+        }
+
+        .node.n4 {
+            left: 35px;
+            top: 190px;
+        }
+
+        /* STATS */
+
+        .stats {
+            width: 84%;
+            margin: auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            padding-bottom: 70px;
+        }
+
+        .stat {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 25px;
+            border-radius: 15px;
+        }
+
+        .stat h2 {
+            color: #ff1744;
+            margin-bottom: 8px;
+        }
+
+        .stat p {
+            color: #888;
+        }
+
+        /* ANIMATIONS */
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.08);
+            }
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes rotateReverse {
+            from {
+                transform: rotate(360deg);
+            }
+
+            to {
+                transform: rotate(0deg);
+            }
+        }
+
+        /* MOBILE */
+
+        @media(max-width: 900px) {
+
+            nav ul {
+                display: none;
+            }
+
+            .hero {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .buttons {
+                justify-content: center;
+            }
+
+            .ai-area {
+                margin-top: 50px;
+                transform: scale(0.8);
+            }
+
+            h1 {
+                font-size: 45px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media(max-width: 500px) {
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVIGATION -->
+
+    <nav>
+
+        <div class="logo">
+            🩸 BLOOD <span>BRIDGE</span> AI
+        </div>
+
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Find Blood</a></li>
+            <li><a href="#">Donate</a></li>
+            <li><a href="#">AI Assistant</a></li>
+        </ul>
+
+    </nav>
+
+
+    <!-- HERO SECTION -->
+
+    <section class="hero">
+
+        <div class="hero-text">
+
+            <div class="tag">
+                ● AI POWERED BLOOD NETWORK
+            </div>
+
+            <h1>
+                Every Second.<br>
+                Every <span>Drop.</span><br>
+                Every Life.
+            </h1>
+
+            <p>
+                Blood Bridge AI connects emergency patients,
+                blood banks and eligible donors through an
+                intelligent matching network.
+            </p>
+
+            <div class="buttons">
+
+                <a href="/emergency" class="btn primary">
+                  🚨 NEED BLOOD NOW
+                </a>
+
+                <a href="#" class="btn secondary">
+                    🩸 JOIN THE NETWORK
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- AI CORE -->
+
+        <div class="ai-area">
+
+            <div class="circle one"></div>
+            <div class="circle two"></div>
+            <div class="circle three"></div>
+
+            <div class="node n1"></div>
+            <div class="node n2"></div>
+            <div class="node n3"></div>
+            <div class="node n4"></div>
+
+            <div class="core">
+                🩸
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- NETWORK STATS -->
+
+    <section class="stats">
+
+        <div class="stat">
+            <h2>24/7</h2>
+            <p>Emergency Network</p>
+        </div>
+
+        <div class="stat">
+            <h2>AI</h2>
+            <p>Smart Matching</p>
+        </div>
+
+        <div class="stat">
+            <h2>LIVE</h2>
+            <p>Blood Availability</p>
+        </div>
+
+        <div class="stat">
+            <h2>FAST</h2>
+            <p>Emergency Response</p>
+        </div>
+
+    </section>
+
+</body>
+</html>
