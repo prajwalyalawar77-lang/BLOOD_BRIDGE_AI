@@ -1,407 +1,285 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request
+from database import create_database, add_blood_bank, get_blood_banks
 
 app = Flask(__name__)
 
 
-# =========================================================
-# DEMO BLOOD DATABASE
-# =========================================================
+# ==================================================
+# BLOOD BANK DATA
+# ==================================================
 
-blood_database = [
-
+blood_data = [
     {
-        "name": "City Blood Bank",
-        "type": "O+",
-        "units": 5,
-        "location": "Bengaluru",
-        "distance": 3.2
-    },
-
-    {
-        "name": "Regional Blood Centre",
-        "type": "O-",
+        "name": "Belagavi Life Care Blood Bank",
+        "blood_group": "B-",
         "units": 3,
-        "location": "Bengaluru",
-        "distance": 5.7
+        "location": "Belagavi",
+        "distance": 7.4,
+        "phone": "9876543210"
     },
-
     {
-        "name": "Community Blood Centre",
-        "type": "A+",
-        "units": 4,
-        "location": "Bengaluru",
-        "distance": 7.4
-    },
-
-    {
-        "name": "Life Care Blood Bank",
-        "type": "B+",
+        "name": "Belagavi Emergency Blood Centre",
+        "blood_group": "AB-",
         "units": 2,
-        "location": "Bengaluru",
-        "distance": 9.1
+        "location": "Belagavi",
+        "distance": 9.0,
+        "phone": "9876543211"
     },
-
     {
-        "name": "Hope Blood Bank",
-        "type": "AB+",
+        "name": "Belagavi Hope Blood Bank",
+        "blood_group": "O+",
+        "units": 8,
+        "location": "Belagavi",
+        "distance": 11.5,
+        "phone": "9876543212"
+    },
+    {
+        "name": "Belagavi Central Blood Bank",
+        "blood_group": "A+",
+        "units": 5,
+        "location": "Belagavi",
+        "distance": 5.2,
+        "phone": "9876543213"
+    },
+    {
+        "name": "Bengaluru Central Blood Bank",
+        "blood_group": "O-",
         "units": 6,
         "location": "Bengaluru",
-        "distance": 11.2
+        "distance": 145,
+        "phone": "9876543214"
     },
-
     {
-        "name": "Emergency Blood Centre",
-        "type": "O-",
-        "units": 5,
+        "name": "Bengaluru Life Blood Centre",
+        "blood_group": "A-",
+        "units": 7,
+        "location": "Bengaluru",
+        "distance": 148,
+        "phone": "9876543215"
+    },
+    {
+        "name": "Mysuru Blood Care Centre",
+        "blood_group": "O+",
+        "units": 10,
         "location": "Mysuru",
-        "distance": 145
+        "distance": 165,
+        "phone": "9876543216"
+    },
+    {
+        "name": "Hubballi Blood Bank",
+        "blood_group": "B+",
+        "units": 6,
+        "location": "Hubballi",
+        "distance": 105,
+        "phone": "9876543217"
+    },
+    {
+        "name": "Dharwad Life Saver Blood Bank",
+        "blood_group": "AB+",
+        "units": 4,
+        "location": "Dharwad",
+        "distance": 110,
+        "phone": "9876543218"
+    },
+    {
+        "name": "Mangaluru Emergency Blood Centre",
+        "blood_group": "O-",
+        "units": 4,
+        "location": "Mangaluru",
+        "distance": 325,
+        "phone": "9876543219"
     }
-
 ]
 
 
-# =========================================================
+# ==================================================
 # BLOOD COMPATIBILITY
-# =========================================================
+# ==================================================
 
-compatible_blood = {
-
+compatibility = {
     "A+": ["A+", "A-", "O+", "O-"],
-
     "A-": ["A-", "O-"],
-
     "B+": ["B+", "B-", "O+", "O-"],
-
     "B-": ["B-", "O-"],
-
-    "AB+": [
-        "AB+",
-        "AB-",
-        "A+",
-        "A-",
-        "B+",
-        "B-",
-        "O+",
-        "O-"
-    ],
-
-    "AB-": [
-        "AB-",
-        "A-",
-        "B-",
-        "O-"
-    ],
-
+    "AB+": ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
+    "AB-": ["A-", "B-", "AB-", "O-"],
     "O+": ["O+", "O-"],
-
     "O-": ["O-"]
-
 }
 
 
-# =========================================================
-# MATCHING ENGINE
-# =========================================================
-
-def find_matches(
-    required_blood,
-    required_units,
-    location,
-    urgency
-):
-
-    matches = []
-
-
-    # -----------------------------------------------------
-    # CHECK EVERY BLOOD BANK
-    # -----------------------------------------------------
-
-    for bank in blood_database:
-
-        bank_type = bank["type"]
-
-
-        # -------------------------------------------------
-        # BLOOD COMPATIBILITY
-        # -------------------------------------------------
-
-        if bank_type not in compatible_blood.get(
-            required_blood,
-            []
-        ):
-            continue
-
-
-        # -------------------------------------------------
-        # AVAILABILITY
-        # -------------------------------------------------
-
-        if bank["units"] <= 0:
-            continue
-
-
-        # -------------------------------------------------
-        # LOCATION SCORE
-        # -------------------------------------------------
-
-        distance = bank["distance"]
-
-
-        if distance <= 5:
-
-            location_score = 40
-
-        elif distance <= 10:
-
-            location_score = 30
-
-        elif distance <= 25:
-
-            location_score = 20
-
-        else:
-
-            location_score = 10
-
-
-        # -------------------------------------------------
-        # BLOOD SCORE
-        # -------------------------------------------------
-
-        if bank_type == required_blood:
-
-            blood_score = 40
-
-        elif bank_type == "O-":
-
-            blood_score = 35
-
-        else:
-
-            blood_score = 25
-
-
-        # -------------------------------------------------
-        # AVAILABILITY SCORE
-        # -------------------------------------------------
-
-        if bank["units"] >= required_units:
-
-            availability_score = 20
-
-        else:
-
-            availability_score = 10
-
-
-        # -------------------------------------------------
-        # TOTAL SCORE
-        # -------------------------------------------------
-
-        score = (
-            blood_score
-            + location_score
-            + availability_score
-        )
-
-
-        # -------------------------------------------------
-        # URGENCY BONUS
-        # -------------------------------------------------
-
-        if urgency == "Critical":
-
-            score += 5
-
-        elif urgency == "Urgent":
-
-            score += 3
-
-
-        # Maximum theoretical score = 105
-        score = min(score, 100)
-
-
-        # -------------------------------------------------
-        # MATCH RESULT
-        # -------------------------------------------------
-
-        match = {
-
-            "name": bank["name"],
-
-            "type": bank["type"],
-
-            "units": bank["units"],
-
-            "location": bank["location"],
-
-            "distance": bank["distance"],
-
-            "score": score,
-
-            "exact_match":
-                bank_type == required_blood,
-
-            "enough_units":
-                bank["units"] >= required_units
-
-        }
-
-
-        matches.append(match)
-
-
-    # -----------------------------------------------------
-    # SORT BEST MATCH FIRST
-    # -----------------------------------------------------
-
-    matches.sort(
-        key=lambda x: x["score"],
-        reverse=True
-    )
-
-
-    return matches
-
-
-# =========================================================
+# ==================================================
 # HOME
-# =========================================================
+# ==================================================
 
 @app.route("/")
 def home():
+    return render_template("index.html")
+
+
+# ==================================================
+# REGISTER BLOOD BANK
+# ==================================================
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+
+        bank_name = request.form.get("bank_name", "").strip()
+        blood_group = request.form.get("blood_group", "").strip().upper()
+        units_text = request.form.get("units", "0").strip()
+        location = request.form.get("location", "").strip()
+        phone = request.form.get("phone", "").strip()
+
+        try:
+            units = int(units_text)
+        except ValueError:
+            units = 0
+
+        if (
+            bank_name
+            and blood_group
+            and units > 0
+            and location
+            and phone
+        ):
+
+            add_blood_bank(
+                bank_name,
+                blood_group,
+                units,
+                location,
+                phone
+            )
+
+            new_bank = {
+                "name": bank_name,
+                "blood_group": blood_group,
+                "units": units,
+                "location": location,
+                "phone": phone
+            }
+
+            return render_template(
+                "register.html",
+                success=True,
+                bank=new_bank
+            )
 
     return render_template(
-        "index.html"
+        "register.html",
+        success=False
     )
 
-
-# =========================================================
-# EMERGENCY PAGE
-# =========================================================
+# ==================================================
+# EMERGENCY
+# ==================================================
 
 @app.route("/emergency")
 def emergency():
-
-    return render_template(
-        "emergency.html"
-    )
+    return render_template("emergency.html")
 
 
-# =========================================================
-# MATCHING PAGE
-# =========================================================
+# ==================================================
+# MATCHING
+# ==================================================
+
+
 
 @app.route("/matches")
 def matches():
 
-    return render_template(
-        "matches.html"
+    requested_blood = request.args.get(
+        "blood_group",
+        ""
+    ).strip().upper()
+
+    units_text = request.args.get(
+        "units",
+        "1"
+    ).strip()
+
+    location = request.args.get(
+        "location",
+        ""
+    ).strip()
+
+    emergency_level = request.args.get(
+        "emergency",
+        "Normal"
+    ).strip()
+
+    try:
+        units_required = int(units_text)
+    except ValueError:
+        units_required = 1
+
+    if units_required < 1:
+        units_required = 1
+
+    compatible_groups = compatibility.get(
+        requested_blood,
+        []
     )
 
+    database_banks = get_blood_banks()
 
-# =========================================================
-# ACTUAL AI MATCHING API
-# =========================================================
+    matches_list = []
 
-@app.route(
-    "/api/match",
-    methods=["POST"]
-)
-def api_match():
+    for bank in database_banks:
 
-    data = request.get_json()
+        if bank["blood_group"] not in compatible_groups:
+            continue
 
+        if bank["units"] < units_required:
+            continue
 
-    blood_group = data.get(
-        "bloodGroup"
-    )
+        match = bank.copy()
 
-    units = int(
-        data.get(
-            "units",
-            1
+        if bank["blood_group"] == requested_blood:
+            match["match_type"] = "Exact Match"
+            match["priority"] = 1
+        else:
+            match["match_type"] = "Compatible Match"
+            match["priority"] = 2
+
+        if (
+            location
+            and location.lower() in bank["location"].lower()
+        ):
+            match["location_match"] = True
+            match["priority"] -= 0.5
+        else:
+            match["location_match"] = False
+
+        match["distance"] = 0
+
+        matches_list.append(match)
+
+    matches_list.sort(
+        key=lambda x: (
+            x["priority"],
+            x["distance"]
         )
     )
 
-    location = data.get(
-        "location",
-        ""
+    return render_template(
+        "matches.html",
+        matches=matches_list,
+        blood_group=requested_blood,
+        units=units_required,
+        location=location,
+        emergency=emergency_level
     )
-
-    urgency = data.get(
-        "urgency",
-        "Normal"
-    )
-
-
-    # -----------------------------------------------------
-    # VALIDATION
-    # -----------------------------------------------------
-
-    if not blood_group:
-
-        return jsonify({
-
-            "success": False,
-
-            "message":
-                "Blood group is required."
-
-        })
-
-
-    # -----------------------------------------------------
-    # RUN MATCHING ENGINE
-    # -----------------------------------------------------
-
-    matches = find_matches(
-
-        blood_group,
-
-        units,
-
-        location,
-
-        urgency
-
-    )
-
-
-    return jsonify({
-
-        "success": True,
-
-        "request": {
-
-            "bloodGroup":
-                blood_group,
-
-            "units":
-                units,
-
-            "location":
-                location,
-
-            "urgency":
-                urgency
-
-        },
-
-        "matches":
-            matches
-
-    })
-
-
-# =========================================================
+# ==================================================
 # START SERVER
-# =========================================================
+# ==================================================
 
 if __name__ == "__main__":
+    create_database()
 
     app.run(
-        debug=True
+        debug=True,
+        host="127.0.0.1",
+        port=5000
     )

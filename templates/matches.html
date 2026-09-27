@@ -4,232 +4,340 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>AI Matching | Blood Bridge AI</title>
+    <title>Blood Bridge AI - Matching Results</title>
 
     <style>
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
+            font-family: Arial, Helvetica, sans-serif;
         }
 
         body {
             min-height: 100vh;
-            background:
-                radial-gradient(circle at top, #26000b, #05070d 60%);
             color: white;
-            padding: 35px;
+            background:
+                radial-gradient(circle at 10% 10%, rgba(255, 55, 85, 0.20), transparent 30%),
+                radial-gradient(circle at 90% 90%, rgba(100, 50, 255, 0.18), transparent 30%),
+                #080b16;
+        }
+
+        .navbar {
+            padding: 20px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            background: rgba(8,11,22,0.8);
+            backdrop-filter: blur(15px);
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #ff405d;
+        }
+
+        .logo span {
+            color: white;
+        }
+
+        .home-btn {
+            color: white;
+            text-decoration: none;
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 10px 18px;
+            border-radius: 25px;
+            transition: 0.3s;
+        }
+
+        .home-btn:hover {
+            background: #ff405d;
+            border-color: #ff405d;
         }
 
         .container {
-            max-width: 1100px;
-            margin: auto;
+            width: 90%;
+            max-width: 1150px;
+            margin: 45px auto;
         }
 
-        .back {
-            color: #aaa;
-            text-decoration: none;
-        }
-
-        .back:hover {
-            color: white;
-        }
-
-        .header {
-            text-align: center;
-            margin: 40px 0;
-        }
-
-        .ai-badge {
-            display: inline-block;
-            padding: 8px 18px;
-            border: 1px solid #ff1744;
-            border-radius: 30px;
-            color: #ff4d6d;
-            margin-bottom: 20px;
-        }
-
-        h1 {
-            font-size: 48px;
-        }
-
-        h1 span {
-            color: #ff1744;
-        }
-
-        .header p {
-            color: #999;
-            margin-top: 12px;
-        }
-
-        /* AI SCANNING */
-
-        .scanner {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 22px;
-            padding: 30px;
+        .hero {
             text-align: center;
             margin-bottom: 35px;
         }
 
-        .core {
-            width: 110px;
-            height: 110px;
-            margin: auto;
-            border-radius: 50%;
-            background: #ff1744;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 45px;
-            box-shadow:
-                0 0 30px rgba(255,23,68,0.7),
-                0 0 80px rgba(255,23,68,0.25);
-            animation: pulse 1.5s infinite;
+        .robot {
+            font-size: 55px;
+            animation: float 2.5s ease-in-out infinite;
         }
 
-        .scanning-text {
-            margin-top: 20px;
-            color: #ff4d6d;
-            font-size: 18px;
-        }
-
-        .progress {
-            max-width: 500px;
-            height: 7px;
-            background: #222;
-            border-radius: 10px;
-            margin: 18px auto;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            height: 100%;
-            width: 0%;
-            background: #ff1744;
-            transition: width 2s;
-        }
-
-        /* CHECKS */
-
-        .checks {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            margin-top: 25px;
-        }
-
-        .check {
-            padding: 15px;
-            border: 1px solid #292929;
-            border-radius: 10px;
-            color: #777;
-        }
-
-        .check.active {
-            color: #66ff99;
-            border-color: rgba(102,255,153,0.3);
-        }
-
-        /* RESULTS */
-
-        #results {
-            display: none;
-        }
-
-        .result-title {
-            text-align: center;
-            margin: 40px 0 25px;
-        }
-
-        .result-title h2 {
-            color: #66ff99;
-            font-size: 30px;
-        }
-
-        .matches {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 18px;
-        }
-
-        .match-card {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 18px;
-            padding: 24px;
-            transition: 0.3s;
-        }
-
-        .match-card:hover {
-            transform: translateY(-5px);
-            border-color: #ff1744;
-            box-shadow: 0 10px 35px rgba(255,23,68,0.12);
-        }
-
-        .match-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 18px;
-        }
-
-        .blood {
-            font-size: 30px;
-            font-weight: bold;
-            color: #ff1744;
-        }
-
-        .match-score {
-            color: #66ff99;
-            font-weight: bold;
-        }
-
-        .info {
-            color: #aaa;
-            line-height: 2;
-        }
-
-        .connect {
-            width: 100%;
-            margin-top: 18px;
-            padding: 13px;
-            border: 0;
-            border-radius: 9px;
-            background: #ff1744;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .connect:hover {
-            background: #e9133d;
-        }
-
-        @keyframes pulse {
+        @keyframes float {
             0%, 100% {
-                transform: scale(1);
+                transform: translateY(0);
             }
 
             50% {
-                transform: scale(1.08);
+                transform: translateY(-10px);
             }
         }
 
-        @media(max-width: 800px) {
+        .hero h1 {
+            font-size: 42px;
+            margin-top: 12px;
+        }
 
-            .checks {
+        .hero h1 span {
+            color: #ff405d;
+        }
+
+        .hero p {
+            margin-top: 10px;
+            color: #aeb4c2;
+            font-size: 17px;
+        }
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 35px;
+        }
+
+        .summary-card {
+            padding: 20px;
+            border-radius: 18px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(15px);
+        }
+
+        .summary-card .icon {
+            font-size: 25px;
+            margin-bottom: 10px;
+        }
+
+        .summary-card small {
+            display: block;
+            color: #9fa6b5;
+            margin-bottom: 5px;
+        }
+
+        .summary-card strong {
+            font-size: 20px;
+        }
+
+        .section-title {
+            font-size: 25px;
+            margin-bottom: 20px;
+        }
+
+        .ai-banner {
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 18px;
+            background: linear-gradient(
+                135deg,
+                rgba(255,64,93,0.14),
+                rgba(100,50,255,0.12)
+            );
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .ai-banner h3 {
+            margin-bottom: 7px;
+        }
+
+        .ai-banner p {
+            color: #b6bcc9;
+            line-height: 1.6;
+        }
+
+        .results {
+            display: grid;
+            gap: 20px;
+        }
+
+        .blood-card {
+            position: relative;
+            overflow: hidden;
+            padding: 25px;
+            border-radius: 22px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            backdrop-filter: blur(15px);
+            transition: 0.3s;
+        }
+
+        .blood-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255,64,93,0.5);
+            box-shadow: 0 15px 45px rgba(0,0,0,0.3);
+        }
+
+        .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .bank-name {
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+        .match-badge {
+            padding: 7px 12px;
+            border-radius: 20px;
+            background: rgba(50,220,130,0.12);
+            color: #58e39a;
+            border: 1px solid rgba(50,220,130,0.25);
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        .blood-info {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 22px;
+        }
+
+        .info-box {
+            padding: 15px;
+            border-radius: 13px;
+            background: rgba(0,0,0,0.18);
+        }
+
+        .info-box small {
+            display: block;
+            color: #9299a9;
+            margin-bottom: 7px;
+        }
+
+        .info-box strong {
+            font-size: 17px;
+        }
+
+        .blood-type {
+            color: #ff405d;
+            font-size: 24px !important;
+        }
+
+        .location-match {
+            margin-top: 17px;
+            color: #65e39c;
+            font-size: 14px;
+        }
+
+        .score-area {
+            margin-top: 22px;
+        }
+
+        .score-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .score-header span {
+            color: #aeb4c2;
+        }
+
+        .score-bar {
+            height: 9px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.08);
+            overflow: hidden;
+        }
+
+        .score-fill {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #ff405d, #ff8a9a);
+            animation: loadScore 1.2s ease forwards;
+        }
+
+        @keyframes loadScore {
+            from {
+                width: 0;
+            }
+
+            to {
+                width: var(--score);
+            }
+        }
+
+        .empty {
+            text-align: center;
+            padding: 60px 25px;
+            border-radius: 22px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .empty-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .empty h2 {
+            margin-bottom: 10px;
+        }
+
+        .empty p {
+            color: #aeb4c2;
+            line-height: 1.6;
+        }
+
+        .new-search {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 13px 22px;
+            background: #ff405d;
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: bold;
+        }
+
+        .footer-note {
+            text-align: center;
+            color: #777e8d;
+            font-size: 13px;
+            margin-top: 35px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 850px) {
+            .summary {
                 grid-template-columns: repeat(2, 1fr);
             }
 
-            .matches {
+            .blood-info {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 550px) {
+            .hero h1 {
+                font-size: 31px;
+            }
+
+            .summary {
                 grid-template-columns: 1fr;
             }
 
-            h1 {
-                font-size: 35px;
+            .blood-info {
+                grid-template-columns: 1fr;
+            }
+
+            .top-row {
+                align-items: flex-start;
+                flex-direction: column;
             }
         }
     </style>
@@ -237,263 +345,281 @@
 
 <body>
 
-<div class="container">
+    <nav class="navbar">
 
-    <a href="/emergency" class="back">
-        ← Back to Emergency Request
-    </a>
-
-
-    <div class="header">
-
-        <div class="ai-badge">
-            🤖 BLOOD BRIDGE AI
+        <div class="logo">
+            🩸 BLOOD <span>BRIDGE AI</span>
         </div>
 
-        <h1>
-            Intelligent <span>Matching</span>
-        </h1>
+        <a href="/emergency" class="home-btn">
+            ← New Search
+        </a>
 
-        <p>
-            Our matching engine is analyzing the available network.
-        </p>
-
-    </div>
+    </nav>
 
 
-    <!-- AI SCANNER -->
+    <div class="container">
 
-    <div class="scanner">
+        <div class="hero">
 
-        <div class="core">
-            🩸
-        </div>
-
-        <div class="scanning-text" id="status">
-            AI IS ANALYZING THE NETWORK...
-        </div>
-
-        <div class="progress">
-            <div class="progress-bar" id="progress"></div>
-        </div>
-
-
-        <div class="checks">
-
-            <div class="check" id="check1">
-                ⏳ Blood Group
+            <div class="robot">
+                🤖
             </div>
 
-            <div class="check" id="check2">
-                ⏳ Location
-            </div>
-
-            <div class="check" id="check3">
-                ⏳ Availability
-            </div>
-
-            <div class="check" id="check4">
-                ⏳ Priority
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- MATCH RESULTS -->
-
-    <div id="results">
-
-        <div class="result-title">
-
-            <h2>✓ MATCHES FOUND</h2>
+            <h1>
+                AI Blood <span>Matches</span>
+            </h1>
 
             <p>
-                Potential matches identified by the prototype matching engine.
+                Blood Bridge AI has analyzed the available blood sources
+                for your emergency request.
             </p>
 
         </div>
 
 
-        <div class="matches">
+        <div class="summary">
 
-            <!-- MATCH 1 -->
+            <div class="summary-card">
 
-            <div class="match-card">
+                <div class="icon">🩸</div>
 
-                <div class="match-top">
+                <small>Required Blood</small>
 
-                    <div class="blood">
-                        O−
-                    </div>
-
-                    <div class="match-score">
-                        98% Match
-                    </div>
-
-                </div>
-
-                <div class="info">
-
-                    🏥 City Blood Bank<br>
-                    📍 3.2 km away<br>
-                    🩸 2 units listed<br>
-                    🕒 Updated recently
-
-                </div>
-
-                <button
-                    class="connect"
-                    onclick="connect('City Blood Bank')"
-                >
-                    CONNECT
-                </button>
+                <strong>
+                    {{ blood_group }}
+                </strong>
 
             </div>
 
 
-            <!-- MATCH 2 -->
+            <div class="summary-card">
 
-            <div class="match-card">
+                <div class="icon">🧪</div>
 
-                <div class="match-top">
+                <small>Units Required</small>
 
-                    <div class="blood">
-                        O−
-                    </div>
-
-                    <div class="match-score">
-                        94% Match
-                    </div>
-
-                </div>
-
-                <div class="info">
-
-                    🏥 Regional Blood Centre<br>
-                    📍 5.7 km away<br>
-                    🩸 1 unit listed<br>
-                    🕒 Updated recently
-
-                </div>
-
-                <button
-                    class="connect"
-                    onclick="connect('Regional Blood Centre')"
-                >
-                    CONNECT
-                </button>
+                <strong>
+                    {{ units }}
+                </strong>
 
             </div>
 
 
-            <!-- MATCH 3 -->
+            <div class="summary-card">
 
-            <div class="match-card">
+                <div class="icon">📍</div>
 
-                <div class="match-top">
+                <small>Location</small>
 
-                    <div class="blood">
-                        O−
-                    </div>
+                <strong>
+                    {{ location }}
+                </strong>
 
-                    <div class="match-score">
-                        89% Match
-                    </div>
+            </div>
 
-                </div>
 
-                <div class="info">
+            <div class="summary-card">
 
-                    🏥 Community Blood Centre<br>
-                    📍 7.4 km away<br>
-                    🩸 2 units listed<br>
-                    🕒 Updated recently
+                <div class="icon">🚨</div>
 
-                </div>
+                <small>Emergency</small>
 
-                <button
-                    class="connect"
-                    onclick="connect('Community Blood Centre')"
-                >
-                    CONNECT
-                </button>
+                <strong>
+                    {{ emergency }}
+                </strong>
 
             </div>
 
         </div>
 
+
+        <div class="ai-banner">
+
+            <h3>
+                🤖 AI Matching Engine
+            </h3>
+
+            <p>
+                The system checks blood-group compatibility,
+                available units, location preference and distance
+                to identify suitable blood sources.
+            </p>
+
+        </div>
+
+
+        <h2 class="section-title">
+            🏥 Available Blood Sources
+        </h2>
+
+
+        {% if matches %}
+
+        <div class="results">
+
+            {% for match in matches %}
+
+            <div class="blood-card">
+
+                <div class="top-row">
+
+                    <div class="bank-name">
+                        🏥 {{ match.name }}
+                    </div>
+
+                    <div class="match-badge">
+
+                        {% if match.match_type == "Exact Match" %}
+                            ✅ Exact Match
+                        {% else %}
+                            🔗 Compatible Match
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+                <div class="blood-info">
+
+                    <div class="info-box">
+
+                        <small>Blood Group</small>
+
+                        <strong class="blood-type">
+                            {{ match.blood_group }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info-box">
+
+                        <small>Available Units</small>
+
+                        <strong>
+                            {{ match.units }} units
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info-box">
+
+                        <small>Location</small>
+
+                        <strong>
+                            {{ match.location }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="info-box">
+
+                        <small>Distance</small>
+
+                        <strong>
+                            {{ match.distance }} km
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                {% if match.location_match %}
+
+                <div class="location-match">
+                    📍 Location preference matched
+                </div>
+
+                {% endif %}
+
+
+                <div class="score-area">
+
+                    <div class="score-header">
+
+                        <span>
+                            🤖 AI Match Score
+                        </span>
+
+                        <strong>
+                            {% if match.match_type == "Exact Match" %}
+                                98%
+                            {% elif match.location_match %}
+                                92%
+                            {% else %}
+                                84%
+                            {% endif %}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="score-bar">
+
+                        <div
+                            class="score-fill"
+                            style="--score:
+                            {% if match.match_type == "Exact Match" %}
+                                98%
+                            {% elif match.location_match %}
+                                92%
+                            {% else %}
+                                84%
+                            {% endif %};">
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+
+        {% else %}
+
+        <div class="empty">
+
+            <div class="empty-icon">
+                🩸
+            </div>
+
+            <h2>
+                No Matching Blood Found
+            </h2>
+
+            <p>
+                We could not find a suitable blood source with the
+                requested availability and compatibility.
+                Try another location or search again.
+            </p>
+
+            <a href="/emergency" class="new-search">
+                🔎 Search Again
+            </a>
+
+        </div>
+
+        {% endif %}
+
+
+        <div class="footer-note">
+
+            ⚠️ Blood Bridge AI is a prototype for emergency blood
+            availability assistance. Always verify availability
+            directly with the blood bank or hospital before proceeding.
+
+        </div>
+
     </div>
-
-</div>
-
-
-<script>
-
-    let progress = 0;
-
-    const bar = document.getElementById("progress");
-    const status = document.getElementById("status");
-
-    const checks = [
-        document.getElementById("check1"),
-        document.getElementById("check2"),
-        document.getElementById("check3"),
-        document.getElementById("check4")
-    ];
-
-
-    function runAI() {
-
-        let step = 0;
-
-        const interval = setInterval(() => {
-
-            if (step < checks.length) {
-
-                checks[step].classList.add("active");
-
-                checks[step].innerHTML =
-                    "✓ " + checks[step].innerText.substring(2);
-
-                progress += 25;
-
-                bar.style.width = progress + "%";
-
-                step++;
-
-            } else {
-
-                clearInterval(interval);
-
-                status.innerHTML =
-                    "✓ MATCHING COMPLETE";
-
-                document.getElementById("results").style.display =
-                    "block";
-
-            }
-
-        }, 900);
-
-    }
-
-
-    function connect(name) {
-
-        alert(
-            "Connection request sent to " +
-            name +
-            "."
-        );
-
-    }
-
-
-    runAI();
-
-</script>
 
 </body>
 </html>

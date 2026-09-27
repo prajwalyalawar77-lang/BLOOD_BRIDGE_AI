@@ -4,209 +4,283 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Emergency | Blood Bridge AI</title>
+    <title>Blood Bridge AI - Emergency</title>
 
     <style>
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
+            font-family: Arial, Helvetica, sans-serif;
         }
 
         body {
             min-height: 100vh;
             background:
-                radial-gradient(circle at top, #26000b, #05070d 55%);
+                radial-gradient(circle at top left, rgba(255, 60, 90, 0.25), transparent 35%),
+                radial-gradient(circle at bottom right, rgba(120, 40, 255, 0.20), transparent 35%),
+                #080b16;
             color: white;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            width: 100%;
+            padding: 20px 7%;
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            padding: 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            background: rgba(8, 11, 22, 0.75);
+            backdrop-filter: blur(15px);
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: bold;
+            color: #ff405d;
+        }
+
+        .logo span {
+            color: white;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            color: white;
+            padding: 10px 18px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 25px;
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #ff405d;
+            border-color: #ff405d;
         }
 
         .container {
-            width: 100%;
-            max-width: 850px;
-        }
-
-        .back {
-            color: #aaa;
-            text-decoration: none;
-            display: inline-block;
-            margin-bottom: 25px;
-        }
-
-        .back:hover {
-            color: white;
+            width: 90%;
+            max-width: 900px;
+            margin: 50px auto;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 35px;
         }
 
-        .warning {
-            display: inline-block;
-            padding: 8px 18px;
-            border: 1px solid #ff1744;
-            border-radius: 30px;
-            color: #ff4d6d;
-            margin-bottom: 18px;
+        .header .icon {
+            font-size: 55px;
+            margin-bottom: 15px;
+            animation: pulse 1.5s infinite;
         }
 
-        h1 {
-            font-size: 45px;
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.12);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .header h1 {
+            font-size: 42px;
             margin-bottom: 12px;
         }
 
-        h1 span {
-            color: #ff1744;
+        .header h1 span {
+            color: #ff405d;
         }
 
         .header p {
-            color: #999;
+            color: #b8bdc9;
             font-size: 17px;
         }
 
         .card {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 22px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 25px;
             padding: 35px;
-            backdrop-filter: blur(15px);
-            box-shadow: 0 20px 70px rgba(0,0,0,0.4);
+            box-shadow: 0 25px 70px rgba(0,0,0,0.35);
+            backdrop-filter: blur(18px);
         }
 
-        .form-group {
-            margin-bottom: 22px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 9px;
-            color: #ddd;
-            font-weight: bold;
-        }
-
-        input,
-        select {
-            width: 100%;
-            padding: 15px;
-            border-radius: 10px;
-            border: 1px solid #333;
-            background: #0d1017;
-            color: white;
-            font-size: 16px;
-            outline: none;
-        }
-
-        input:focus,
-        select:focus {
-            border-color: #ff1744;
-            box-shadow: 0 0 15px rgba(255,23,68,0.15);
+        .section-title {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #ffffff;
         }
 
         .blood-groups {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+            gap: 12px;
+            margin-bottom: 30px;
         }
 
-        .blood-option {
-            padding: 14px;
-            text-align: center;
-            border: 1px solid #333;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: 0.25s;
-            color: #ddd;
-        }
-
-        .blood-option:hover {
-            border-color: #ff1744;
-        }
-
-        .blood-option.selected {
-            background: #ff1744;
-            border-color: #ff1744;
+        .blood-btn {
+            padding: 15px 10px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.05);
             color: white;
-            box-shadow: 0 0 20px rgba(255,23,68,0.3);
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: 0.25s;
         }
 
-        .urgency {
+        .blood-btn:hover {
+            transform: translateY(-3px);
+            border-color: #ff405d;
+            background: rgba(255,64,93,0.15);
+        }
+
+        .blood-btn.selected {
+            background: #ff405d;
+            border-color: #ff405d;
+            box-shadow: 0 8px 25px rgba(255,64,93,0.35);
+        }
+
+        .input-group {
+            margin-bottom: 24px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 9px;
+            font-size: 15px;
+            color: #d8dbe3;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(0,0,0,0.25);
+            color: white;
+            outline: none;
+            font-size: 16px;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            border-color: #ff405d;
+            box-shadow: 0 0 0 3px rgba(255,64,93,0.1);
+        }
+
+        .input-group select option {
+            background: #111522;
+            color: white;
+        }
+
+        .emergency-levels {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
+            gap: 12px;
         }
 
-        .urgency-option {
-            padding: 14px;
-            text-align: center;
-            border: 1px solid #333;
-            border-radius: 10px;
+        .level-btn {
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.05);
+            color: white;
             cursor: pointer;
+            font-weight: bold;
+            transition: 0.25s;
         }
 
-        .urgency-option:hover {
-            border-color: #ff1744;
+        .level-btn:hover {
+            transform: translateY(-2px);
         }
 
-        .urgency-option.selected {
-            background: rgba(255,23,68,0.15);
-            border-color: #ff1744;
+        .level-btn.selected {
+            background: #ff405d;
+            border-color: #ff405d;
         }
 
         .find-btn {
             width: 100%;
-            padding: 17px;
+            margin-top: 25px;
+            padding: 18px;
             border: none;
-            border-radius: 12px;
-            background: #ff1744;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #ff405d, #ff1744);
             color: white;
-            font-size: 17px;
+            font-size: 18px;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 10px;
-            box-shadow: 0 0 25px rgba(255,23,68,0.3);
             transition: 0.3s;
+            box-shadow: 0 12px 30px rgba(255,64,93,0.25);
         }
 
         .find-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 40px rgba(255,23,68,0.55);
+            transform: translateY(-3px);
+            box-shadow: 0 18px 35px rgba(255,64,93,0.4);
+        }
+
+        .find-btn:active {
+            transform: scale(0.98);
         }
 
         .message {
-            display: none;
             margin-top: 25px;
             padding: 18px;
-            border-radius: 12px;
-            background: rgba(255,23,68,0.08);
-            border: 1px solid rgba(255,23,68,0.3);
-            text-align: center;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            display: none;
+            line-height: 1.7;
+            color: #dfe2e9;
         }
 
-        .message.show {
-            display: block;
+        .ai-box {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 16px;
+            background: linear-gradient(
+                135deg,
+                rgba(255,64,93,0.10),
+                rgba(120,40,255,0.10)
+            );
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
-        @media(max-width: 600px) {
+        .ai-box h3 {
+            margin-bottom: 8px;
+        }
 
-            h1 {
-                font-size: 34px;
-            }
+        .ai-box p {
+            color: #b8bdc9;
+            line-height: 1.6;
+        }
 
-            .card {
-                padding: 22px;
+        @media (max-width: 700px) {
+            .header h1 {
+                font-size: 32px;
             }
 
             .blood-groups {
                 grid-template-columns: repeat(2, 1fr);
             }
 
-            .urgency {
+            .emergency-levels {
                 grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 22px;
             }
         }
     </style>
@@ -214,191 +288,289 @@
 
 <body>
 
-<div class="container">
-
-    <a href="/" class="back">← Back to Blood Bridge AI</a>
-
-    <div class="header">
-
-        <div class="warning">
-            🚨 EMERGENCY MODE
+    <nav class="navbar">
+        <div class="logo">
+            🩸 BLOOD <span>BRIDGE AI</span>
         </div>
 
-        <h1>
-            Find <span>Blood</span> Now
-        </h1>
+        <a href="/" class="back-btn">← Home</a>
+    </nav>
 
-        <p>
-            Tell us what is required. Blood Bridge AI will help identify
-            matching availability.
-        </p>
+    <div class="container">
 
-    </div>
+        <div class="header">
+            <div class="icon">🚑</div>
 
+            <h1>Emergency <span>Blood Finder</span></h1>
 
-    <div class="card">
+            <p>
+                Enter the patient's requirements and let Blood Bridge AI
+                find compatible blood availability.
+            </p>
+        </div>
 
-        <div class="form-group">
+        <div class="card">
 
-            <label>🩸 Select Blood Group</label>
+            <div class="section-title">
+                🩸 Select Required Blood Group
+            </div>
 
             <div class="blood-groups">
 
-                <div class="blood-option" onclick="selectBlood(this, 'A+')">A+</div>
-                <div class="blood-option" onclick="selectBlood(this, 'A-')">A-</div>
-                <div class="blood-option" onclick="selectBlood(this, 'B+')">B+</div>
-                <div class="blood-option" onclick="selectBlood(this, 'B-')">B-</div>
-                <div class="blood-option" onclick="selectBlood(this, 'AB+')">AB+</div>
-                <div class="blood-option" onclick="selectBlood(this, 'AB-')">AB-</div>
-                <div class="blood-option" onclick="selectBlood(this, 'O+')">O+</div>
-                <div class="blood-option" onclick="selectBlood(this, 'O-')">O-</div>
+                <button class="blood-btn" data-blood="A+">A+</button>
+                <button class="blood-btn" data-blood="A-">A-</button>
+
+                <button class="blood-btn" data-blood="B+">B+</button>
+                <button class="blood-btn" data-blood="B-">B-</button>
+
+                <button class="blood-btn" data-blood="AB+">AB+</button>
+                <button class="blood-btn" data-blood="AB-">AB-</button>
+
+                <button class="blood-btn" data-blood="O+">O+</button>
+                <button class="blood-btn" data-blood="O-">O-</button>
 
             </div>
 
-        </div>
 
+            <div class="input-group">
 
-        <div class="form-group">
+                <label for="unitsInput">
+                    🧪 Number of Units Required
+                </label>
 
-            <label for="units">💉 Units Required</label>
-
-            <input
-                type="number"
-                id="units"
-                min="1"
-                max="20"
-                value="1"
-            >
-
-        </div>
-
-
-        <div class="form-group">
-
-            <label for="location">📍 Hospital / Location</label>
-
-            <input
-                type="text"
-                id="location"
-                placeholder="Example: Bengaluru"
-            >
-
-        </div>
-
-
-        <div class="form-group">
-
-            <label>🚨 Emergency Level</label>
-
-            <div class="urgency">
-
-                <div
-                    class="urgency-option selected"
-                    onclick="selectUrgency(this, 'Critical')"
+                <input
+                    type="number"
+                    id="unitsInput"
+                    min="1"
+                    max="20"
+                    value="1"
+                    placeholder="Enter number of units"
                 >
-                    🔴 Critical
-                </div>
 
-                <div
-                    class="urgency-option"
-                    onclick="selectUrgency(this, 'Urgent')"
-                >
-                    🟠 Urgent
-                </div>
+            </div>
 
-                <div
-                    class="urgency-option"
-                    onclick="selectUrgency(this, 'Normal')"
+
+            <div class="input-group">
+
+                <label for="locationInput">
+                    📍 Hospital / Location
+                </label>
+
+                <input
+                    type="text"
+                    id="locationInput"
+                    placeholder="Example: Belagavi"
                 >
-                    🟢 Normal
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label>
+                    🚨 Emergency Level
+                </label>
+
+                <div class="emergency-levels">
+
+                    <button
+                        class="level-btn"
+                        data-level="Critical">
+                        🔴 Critical
+                    </button>
+
+                    <button
+                        class="level-btn"
+                        data-level="Urgent">
+                        🟠 Urgent
+                    </button>
+
+                    <button
+                        class="level-btn"
+                        data-level="Normal">
+                        🟢 Normal
+                    </button>
+
                 </div>
 
             </div>
 
-        </div>
+
+            <button class="find-btn" id="findButton">
+                🤖 FIND BLOOD WITH AI
+            </button>
 
 
-        <button class="find-btn" onclick="findBlood()">
-            🤖 FIND BLOOD WITH AI
-        </button>
+            <div class="message" id="message"></div>
 
 
-        <div class="message" id="message">
-            🤖 AI is preparing your blood-matching request...
+            <div class="ai-box">
+
+                <h3>🤖 How Blood Bridge AI Works</h3>
+
+                <p>
+                    Our matching system checks the requested blood group,
+                    compatible blood groups, required units and location.
+                    Results are then arranged according to match priority
+                    and distance.
+                </p>
+
+            </div>
+
         </div>
 
     </div>
 
-</div>
+
+    <script>
+
+        let selectedBlood = "";
+        let selectedLevel = "Normal";
 
 
-<script>
+        const bloodButtons =
+            document.querySelectorAll(".blood-btn");
 
-    let selectedBlood = "";
-    let selectedUrgency = "Critical";
+        const levelButtons =
+            document.querySelectorAll(".level-btn");
 
+        const findButton =
+            document.getElementById("findButton");
 
-    function selectBlood(element, blood) {
+        const unitsInput =
+            document.getElementById("unitsInput");
 
-        document.querySelectorAll(".blood-option")
-            .forEach(option => option.classList.remove("selected"));
+        const locationInput =
+            document.getElementById("locationInput");
 
-        element.classList.add("selected");
-
-        selectedBlood = blood;
-    }
-
-
-    function selectUrgency(element, urgency) {
-
-        document.querySelectorAll(".urgency-option")
-            .forEach(option => option.classList.remove("selected"));
-
-        element.classList.add("selected");
-
-        selectedUrgency = urgency;
-    }
+        const message =
+            document.getElementById("message");
 
 
-    function findBlood() {
+        bloodButtons.forEach(function(button) {
 
-        const units = document.getElementById("units").value;
-        const location = document.getElementById("location").value;
-        const message = document.getElementById("message");
+            button.addEventListener("click", function() {
 
+                bloodButtons.forEach(function(btn) {
+                    btn.classList.remove("selected");
+                });
 
-        if (selectedBlood === "") {
+                button.classList.add("selected");
 
-            alert("Please select a blood group.");
-            return;
+                selectedBlood =
+                    button.getAttribute("data-blood");
 
-        }
+            });
 
-
-        if (location.trim() === "") {
-
-            alert("Please enter your location.");
-            return;
-
-        }
+        });
 
 
-        message.innerHTML = `
-            🤖 <strong>AI MATCHING STARTED</strong><br><br>
+        levelButtons.forEach(function(button) {
 
-            ✓ Blood group: ${selectedBlood}<br>
-            ✓ Units required: ${units}<br>
-            ✓ Location: ${location}<br>
-            ✓ Emergency: ${selectedUrgency}<br><br>
+            button.addEventListener("click", function() {
 
-            🔎 Searching the Blood Bridge network...
-        `;
+                levelButtons.forEach(function(btn) {
+                    btn.classList.remove("selected");
+                });
 
-        message.classList.add("show");
+                button.classList.add("selected");
 
-    }
+                selectedLevel =
+                    button.getAttribute("data-level");
 
-</script>
+            });
+
+        });
+
+
+        findButton.addEventListener("click", function() {
+
+            const units =
+                parseInt(unitsInput.value);
+
+            const location =
+                locationInput.value.trim();
+
+
+            if (selectedBlood === "") {
+
+                alert("Please select a blood group.");
+
+                return;
+            }
+
+
+            if (isNaN(units) || units < 1) {
+
+                alert("Please enter a valid number of units.");
+
+                return;
+            }
+
+
+            if (location === "") {
+
+                alert("Please enter the hospital or location.");
+
+                return;
+            }
+
+
+            message.style.display = "block";
+
+            message.innerHTML =
+                "🤖 Searching for compatible blood..." +
+                "<br><br>" +
+                "Blood Group: <strong>" +
+                selectedBlood +
+                "</strong><br>" +
+
+                "Units: <strong>" +
+                units +
+                "</strong><br>" +
+
+                "Location: <strong>" +
+                location +
+                "</strong><br>" +
+
+                "Emergency Level: <strong>" +
+                selectedLevel +
+                "</strong>";
+
+
+            findButton.disabled = true;
+
+            findButton.innerHTML =
+                "🤖 AI IS FINDING BLOOD...";
+
+
+            /*
+                IMPORTANT:
+                The result page is /matches.
+                Do NOT change this to /find-blood.
+            */
+
+            const url =
+                "/matches" +
+                "?blood_group=" +
+                encodeURIComponent(selectedBlood) +
+                "&units=" +
+                encodeURIComponent(units) +
+                "&location=" +
+                encodeURIComponent(location) +
+                "&emergency=" +
+                encodeURIComponent(selectedLevel);
+
+
+            setTimeout(function() {
+
+                window.location.href = url;
+
+            }, 800);
+
+        });
+
+    </script>
 
 </body>
 </html>
